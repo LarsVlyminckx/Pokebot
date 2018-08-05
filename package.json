@@ -1,23 +1,26 @@
 {
   "name": "pokebot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index-self-run.js"
   },
-  "author": "",
+  "author": "Lars Vlyminckx",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
     "express": "^4.16.3",
     "touch": "^3.1.0"
   },
-  "engines": {
-    "node": "v8.11.3"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LarsVlyminckx/Pokebot.git"
   },
-  "devDependencies": {
-    "testmybot": "^1.4.5"
-  }
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/LarsVlyminckx/Pokebot/issues"
+  },
+  "homepage": "https://github.com/LarsVlyminckx/Pokebot#readme",
+  "description": "This is my pokedex chatbot"
 }

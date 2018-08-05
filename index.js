@@ -3,14 +3,15 @@ const bodyParser = require('body-parser');
 
 const dbPokedex = require('./pokedex.json');
 const dbPokemonTypes = require('./pokemon-types.json');
+const config = require('./config');
 
 const app = express();
 app.use(bodyParser.json());
-
-var allTypes = ["normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"];
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
 
 // Load routes
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', home);
 app.post('/pokemon-informations', getPokemonInformations);
 app.post('/pokemon-evolutions', getPokemonEvolutions);
 app.post('/strongAgainst', getStrongAgainst);
@@ -20,8 +21,8 @@ app.post('/pokemonWeakAgainst', getPokemonWeakAgainst);
 app.post('/errors', function (req, res) {
     console.error(req.body);
     res.sendStatus(200);
-    var currentdate = new Date();
-    var datetime = "Last Sync: " + currentdate.getDate() + "/"
+    const currentdate = new Date();
+    const datetime = "Last Sync: " + currentdate.getDate() + "/"
         + (currentdate.getMonth() + 1) + "/"
         + currentdate.getFullYear() + " @ "
         + currentdate.getHours() + ":"
@@ -31,9 +32,12 @@ app.post('/errors', function (req, res) {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = config.PORT;
 app.listen(PORT, () => console.log(`App is listening on port ${PORT}`));
 
+function home(req, res){
+    res.render('index');
+}
 
 function findPokemonByName(name) {
     const data = dbPokedex.find(p => p.name.toLowerCase() === name.toLowerCase());
@@ -41,9 +45,7 @@ function findPokemonByName(name) {
         return null;
     }
     return data;
-};
-
-
+}
 function getPokemonInformations(req, res) {
     const pokemon = req.body.conversation.memory.pokemon;
     const pokemonInfos = findPokemonByName(pokemon.value);
@@ -123,7 +125,7 @@ function getStrongAgainst(req, res) {
     const type = req.body.conversation.memory.type;
     const typeInfos = findTypeByName(type.value);
 
-    var result = typeInfos.name + " is strong against:\n* ";
+    let result = typeInfos.name + " is strong against:\n* ";
     result += typeInfos.strengths.join(" \n* ");
     if (!type) {
         res.json({
@@ -144,7 +146,7 @@ function getWeakAgainst(req, res) {
     const type = req.body.conversation.memory.type;
     const typeInfos = findTypeByName(type.value);
 
-    var result = typeInfos.name + " is weak against:\n* ";
+    let result = typeInfos.name + " is weak against:\n* ";
     result += typeInfos.weaknesses.join(" \n* ");
     if (!type) {
         res.json({
@@ -167,16 +169,14 @@ function findTypeByName(name) {
         return null;
     }
     return data;
-};
-
+}
 function getPokemonStrongAgainst(req, res) {
     const pokemon = req.body.conversation.memory.pokemon;
     const pokemonInfos = findPokemonByName(pokemon.value);
-    var typeInfos = "";
-    var i;
+    let typeInfos = "";
 
-    var result = pokemonInfos.name + " is strong against:";
-    for (i = 0; i < pokemonInfos.types.length; i++) {
+    let result = pokemonInfos.name + " is strong against:";
+    for (var i = 0; i < pokemonInfos.types.length; i++) {
         typeInfos = findTypeByName(pokemonInfos.types[i]);
         if (typeInfos.strengths.length > 0) {
             result += "\n* " + typeInfos.strengths.join(" \n* ");
@@ -200,11 +200,10 @@ function getPokemonStrongAgainst(req, res) {
 function getPokemonWeakAgainst(req, res) {
     const pokemon = req.body.conversation.memory.pokemon;
     const pokemonInfos = findPokemonByName(pokemon.value);
-    var typeInfos = "";
-    var i;
+    let typeInfos = "";
 
     var result = pokemonInfos.name + " is weak against:";
-    for (i = 0; i < pokemonInfos.types.length; i++) {
+    for (let i = 0; i < pokemonInfos.types.length; i++) {
         typeInfos = findTypeByName(pokemonInfos.types[i]);
         if (typeInfos.weaknesses.length > 0) {
             result += "\n* " + typeInfos.weaknesses.join(" \n* ");
