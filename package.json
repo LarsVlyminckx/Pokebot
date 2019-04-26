@@ -8,7 +8,7 @@
   "author": "Lars Vlyminckx",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.19.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "touch": "^3.1.0"
